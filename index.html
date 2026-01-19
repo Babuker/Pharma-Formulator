@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | Enterprise Edition</title>
+    <title>PharmaFormulator Pro | Enterprise</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container" id="app-container">
         <div class="lang-switcher no-print">
             <select id="lang" onchange="updateUI()">
-                <option value="en" selected>English (Default)</option>
+                <option value="en" selected>English</option>
                 <option value="ar">العربية</option>
             </select>
         </div>
@@ -31,28 +32,28 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label id="lbl-batch">Batch Size (Total Units)</label>
+                    <label id="lbl-batch">Batch Size (Units)</label>
                     <input type="number" id="batch-units" value="50000">
                 </div>
             </div>
 
             <div class="card">
                 <div class="input-group">
+                    <label id="lbl-strategy">Procurement Strategy | استراتيجية التوريد</label>
+                    <select id="strategy-mode">
+                        <option value="auto">AI Auto-Optimize (تحسين تلقائي)</option>
+                        <option value="manual">Premium Suppliers (موردين معتمدين)</option>
+                        <option value="cost">Lowest Cost (أقل تكلفة)</option>
+                    </select>
+                </div>
+                <div class="input-group">
                     <label id="lbl-form">Dosage Form</label>
                     <select id="dosage-form">
                         <option value="tablet">Tablet (قرص)</option>
                         <option value="coated">Coated Tablet (قرص مغلف)</option>
                         <option value="syrup">Liquid Syrup (شراب سائل)</option>
-                        <option value="dry_powder">Dry Powder Syrup (شراب جاف باودر)</option>
+                        <option value="dry_powder">Dry Powder (شراب جاف)</option>
                         <option value="capsule">Capsule (كابسول)</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label id="lbl-ref">Reference</label>
-                    <select id="ref">
-                        <option value="USP">USP</option>
-                        <option value="BP">BP</option>
-                        <option value="EUP">EUP</option>
                     </select>
                 </div>
                 <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Full Report</button>
@@ -60,26 +61,37 @@
         </div>
 
         <div class="result-section" id="results">
-            <h3 id="h-table">1. Formulation Composition | جدول التركيبة</h3>
-            <table id="formula-table">
-                <thead>
-                    <tr><th id="th-m">Material</th><th id="th-r">Role</th><th id="th-q">Qty/Unit</th><th id="th-wp">Wt %</th><th id="th-cp">Cost %</th></tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
+            <h3 id="h-table">1. Formulation Composition | تفاصيل التركيبة</h3>
+            <div class="table-container">
+                <table id="formula-table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Role</th>
+                            <th>Qty/Unit</th>
+                            <th>Wt %</th>
+                            <th>Cost %</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
 
-            <h3 id="h-batch">2. Batch & Logistics Info | معلومات التشغيلة</h3>
-            <div class="info-grid" id="batch-summary"></div>
-
-            <h3 id="h-steps">3. Manufacturing Process | خطوات التصنيع</h3>
-            <div id="manufacturing-steps" class="steps-container"></div>
-
-            <h3 id="h-rec">4. Final Recommendations & Storage | التوصيات النهائية</h3>
-            <div class="recommendation-card" id="logistics-recommendations"></div>
+            <div class="analysis-grid">
+                <div class="chart-box">
+                    <h4>Cost Distribution | توزيع التكلفة</h4>
+                    <canvas id="costChart"></canvas>
+                </div>
+                <div class="logistics-summary">
+                    <h4 id="h-rec">Recommendations | التوصيات</h4>
+                    <div id="logistics-recommendations" class="rec-grid"></div>
+                </div>
+            </div>
 
             <div class="security-footer">
                 <div class="barcode-area"><svg id="barcode"></svg></div>
-                <button class="btn-main no-print" style="background:#27ae60; width: auto; padding: 10px 30px;" onclick="window.print()">Export PDF</button>
+                <button class="btn-main no-print" style="background:#27ae60; width: auto;" onclick="window.print()">Export PDF</button>
             </div>
         </div>
     </div>
