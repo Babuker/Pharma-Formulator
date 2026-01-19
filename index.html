@@ -1,98 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | Enterprise Edition</title>
+    <title>PharmaFormulator Enterprise Suite</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container" id="app-container">
-        <select id="lang" onchange="updateUI()">
-            <option value="en">English (Global)</option>
-            <option value="ar">العربية (نسخة المؤسسة)</option>
-        </select>
+        <div class="lang-switcher no-print">
+            <select id="lang" onchange="updateUI()">
+                <option value="ar">العربية (نسخة المؤسسات)</option>
+                <option value="en">English (Global Enterprise)</option>
+            </select>
+        </div>
 
         <div class="header">
-            <div class="security-badge" id="legal-badge">Proprietary & Confidential</div>
-            <h2 id="main-title">PharmaFormulator Pro</h2>
-            <p id="sub-title">Enterprise Manufacturing & Logistics System</p>
+            <div class="security-stamp">CONFIDENTIAL - IP PROTECTED</div>
+            <h1 id="main-title">فارما فورميوليتور برو</h1>
+            <p id="sub-title">نظام التصنيع والخدمات اللوجستية العالمي</p>
         </div>
 
         <div class="config-grid no-print">
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-api">API Name & Dose (mg)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="api-name" placeholder="Paracetamol">
-                        <input type="number" id="api-dose" value="500">
+                    <label id="lbl-api">بيانات المادة الفعالة</label>
+                    <div class="flex-row">
+                        <input type="text" id="api-name" placeholder="اسم المادة (مثال: باراسيتامول)">
+                        <input type="number" id="api-dose" placeholder="الجرعة (ملجم)" value="500">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label id="lbl-batch">Batch Size (Total Units)</label>
-                    <input type="number" id="batch-units" value="100000">
+                    <label id="lbl-batch">حجم التشغيلة (عدد الوحدات)</label>
+                    <input type="number" id="batch-units" value="50000">
+                </div>
+                <div class="input-group">
+                    <label id="lbl-form">الشكل الصيدلاني</label>
+                    <select id="dosage-form">
+                        <option value="tablet">أقراص (Tablets)</option>
+                        <option value="syrup">شراب (Syrup)</option>
+                    </select>
                 </div>
             </div>
 
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-excipients">Excipient Selection</label>
-                    <select id="filler-select"></select>
-                    <select id="binder-select"></select>
-                    <select id="lubricant-select"></select>
-                </div>
-                <div class="input-group">
-                    <label id="lbl-form">Dosage Form</label>
-                    <select id="dosage-form">
-                        <option value="tablet">Tablets (Blister)</option>
-                        <option value="syrup">Liquid Syrup</option>
+                    <label id="lbl-optimize">وضع تحسين التكاليف</label>
+                    <select id="cost-mode">
+                        <option value="manual">اختيار يدوي للمواد</option>
+                        <option value="auto">تحسين التكلفة تلقائياً (ذكاء اصطناعي)</option>
                     </select>
                 </div>
-                <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Report</button>
+                <div id="manual-materials">
+                    <select id="filler-select"></select>
+                    <select id="binder-select"></select>
+                </div>
+                <button class="btn-main" id="btn-run" onclick="runFormulator()">توليد التقرير الأمني</button>
             </div>
         </div>
 
-        <div class="result-section" id="results">
-            <h3 id="h-table">1. Formulation Composition</h3>
-            <table id="formula-table">
-                <thead>
-                    <tr>
-                        <th id="th-m">Material</th>
-                        <th id="th-r">Function</th>
-                        <th id="th-q">Qty/Unit</th>
-                        <th id="th-wp">Wt %</th>
-                        <th id="th-cp">Cost %</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
-
-            <h3 id="h-batch">2. Logistics & Warehouse Analytics</h3>
-            <div class="info-grid" id="batch-summary"></div>
-
-            <div class="logistics-container">
-                <h3 id="h-storage">3. Global Storage Requirements</h3>
-                <div class="storage-card" id="storage-info"></div>
+        <div id="results-area" class="result-section">
+            <div class="report-header">
+                <h2 id="h-report-title">تقرير التصنيع المعتمد</h2>
+                <div id="audit-trail" class="audit-log"></div>
             </div>
 
-            <div class="security-area">
-                <div class="security-seal">
-                    <small id="lbl-hash">Security Authentication Hash:</small>
-                    <code id="batch-hash"></code>
+            <div class="analysis-grid">
+                <div class="table-container">
+                    <h3 id="h-table">1. تحليل التركيبة الدوائية</h3>
+                    <table id="formula-table">
+                        <thead>
+                            <tr>
+                                <th id="th-m">المادة</th>
+                                <th id="th-r">الدور</th>
+                                <th id="th-q">الكمية/وحدة</th>
+                                <th id="th-c">التكلفة %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
                 </div>
-                <div class="barcode-area">
+                <div class="chart-container">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+
+            <div class="logistics-section">
+                <h3 id="h-logistics">2. التحليل اللوجستي والمستودعات</h3>
+                <div class="info-grid" id="logistics-data"></div>
+            </div>
+
+            <div class="security-footer">
+                <div class="hash-box">
+                    <small id="lbl-hash-title">بصمة التشفير الأمنية (Trade Secret Hash):</small>
+                    <code id="digital-sig"></code>
+                </div>
+                <div class="barcode-box">
                     <svg id="barcode"></svg>
                 </div>
             </div>
 
-            <button class="btn-main no-print" style="background:#27ae60; margin-top:20px;" id="btn-pdf" onclick="downloadPDF()">Export PDF</button>
+            <button class="btn-export no-print" onclick="downloadPDF()" id="btn-pdf">تصدير PDF معتمد</button>
         </div>
 
-        <div class="legal-footer">
-            <p id="ip-text">© 2026 PharmaFormulator Pro | Trade Secret | GxP Compliant | Intellectual Property Protected</p>
+        <div class="legal-disclaimer">
+            <p id="footer-text">© 2026 جميع حقوق الملكية الفكرية محفوظة. يخضع هذا المستند لقوانين حماية الأسرار التجارية الدولية.</p>
         </div>
     </div>
     <script src="script.js"></script>
