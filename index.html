@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro</title>
+    <title>PharmaFormulator Pro | Enterprise</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,7 +17,7 @@
 
         <div class="header">
             <h1 id="main-title">PharmaFormulator Pro</h1>
-            <p id="sub-title">Integrated Manufacturing & Logistics System</p>
+            <p id="sub-title">Manufacturing & Logistics Intelligence</p>
         </div>
 
         <div class="config-grid no-print">
@@ -39,9 +39,9 @@
                 <div class="input-group">
                     <label id="lbl-strategy">Formulation Strategy</label>
                     <select id="strategy">
-                        <option value="balanced">Balanced</option>
-                        <option value="economy">Economy</option>
-                        <option value="quality">Premium Quality</option>
+                        <option value="balanced">Balanced (توازن)</option>
+                        <option value="economy">Economy (اقتصادي)</option>
+                        <option value="quality">Premium Quality (جودة)</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -68,7 +68,6 @@
                             <th id="th-r">Function</th>
                             <th id="th-q">Qty/Unit</th>
                             <th id="th-wp">Wt %</th>
-                            <th id="th-cp">Cost %</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -80,13 +79,13 @@
                     <canvas id="costChart"></canvas>
                 </div>
                 <div class="details-box">
-                    <h3 id="h-batch-title">2. Batch Details</h3>
-                    <div id="batch-details-content"></div>
+                    <h3 id="h-batch">2. Batch Details</h3>
+                    <div id="batch-content"></div>
                 </div>
             </div>
 
-            <h3 id="h-rec">3. Manufacturing & Storage Recommendations</h3>
-            <div id="recommendations-content" class="rec-grid"></div>
+            <h3 id="h-rec">3. Recommendations</h3>
+            <div id="rec-content" class="rec-grid"></div>
 
             <div class="security-footer">
                 <svg id="barcode"></svg>
