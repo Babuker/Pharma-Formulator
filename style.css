@@ -1,45 +1,14 @@
-:root {
-    --primary: #102a43;
-    --accent: #27ae60;
-    --danger: #cb2431;
-    --bg-light: #f0f4f8;
-    --border: #d9e2ec;
-}
-
-body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg-light); margin: 0; padding: 25px; color: #102a43; }
-.container { max-width: 1100px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-
-[dir="rtl"] { text-align: right; }
-[dir="ltr"] { text-align: left; }
-
-.header { text-align: center; border-bottom: 5px solid var(--primary); margin-bottom: 30px; padding-bottom: 10px; }
-.security-badge { font-size: 10px; color: var(--danger); font-weight: 800; letter-spacing: 2px; }
-
-.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 40px; }
-.card { background: #f8fafc; padding: 25px; border-radius: 10px; border: 1px solid var(--border); }
-
-.flex-row { display: flex; gap: 10px; }
-.input-group { margin-bottom: 18px; }
-label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #486581; }
-input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-
-.btn-main { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-.btn-main:hover { background: #243b53; }
-
-.result-section { display: none; animation: fadeIn 0.5s ease-in; }
-.analysis-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: center; }
-
-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
-th { background: var(--primary); color: white; padding: 12px; text-transform: uppercase; }
-td { padding: 12px; border: 1px solid #edf2f7; text-align: center; }
-
-.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
-.info-box { background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center; border-top: 4px solid var(--primary); }
-
-.security-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding: 20px; background: #fffcf0; border: 1px dashed #f1c40f; border-radius: 8px; }
-.audit-log { font-size: 11px; color: #627d98; margin-bottom: 15px; }
-
-.legal-disclaimer { margin-top: 40px; text-align: center; font-size: 11px; color: #bcccdc; border-top: 1px solid #f0f4f8; padding-top: 20px; }
-
-@media print { .no-print { display: none !important; } .container { box-shadow: none; border: none; } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+:root { --primary: #0a3d62; --accent: #27ae60; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; padding: 20px; }
+.container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.rtl { direction: rtl; text-align: right; }
+.header { text-align: center; border-bottom: 3px solid var(--primary); margin-bottom: 25px; }
+.card { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px; }
+.btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+.info-box { background: #eef2f3; padding: 10px; text-align: center; border-radius: 6px; border: 1px solid #d1d8dd; }
+.rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+.rec-node { background: #fff; padding: 15px; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); font-size: 14px; }
+.step-item { display: inline-block; background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; margin: 5px; font-size: 12px; }
+.security-footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 20px; }
+@media print { .no-print { display: none; } .container { width: 100%; box-shadow: none; } }
