@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharma Formulator Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f4f7f6; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        select, input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: var(--secondary); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background: #f8f9fa; }
+        .rtl { direction: rtl; text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <div class="header">
+        <h2 id="title">Pharmaceutical Formulator Pro</h2>
+        <select id="lang-switch" style="width: 120px;" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+
+    <div class="grid">
+        <div class="inputs">
+            <label id="lbl-api">Active Ingredient (mg)</label>
+            <input type="text" id="api-name" placeholder="API Name">
+            <input type="number" id="api-mg" value="500">
+            
+            <label id="lbl-form">Dosage Form</label>
+            <select id="form-type">
+                <option value="Tablet">Tablet</option>
+                <option value="Capsule">Capsule</option>
+                <option value="Syrup">Syrup</option>
+            </select>
+
+            <label id="lbl-goal">Optimization Goal</label>
+            <select id="goal">
+                <option value="Balanced">Balanced</option>
+                <option value="Economic">Economic</option>
+                <option value="Quality">Quality</option>
+            </select>
+            <br><br>
+            <button onclick="calculate()" id="btn-calc">Calculate Optimal Formula</button>
+        </div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <div id="results-area" style="display:none;">
+        <table id="result-table">
+            <thead>
+                <tr>
+                    <th id="th-m">Material</th>
+                    <th id="th-q">Qty (mg)</th>
+                    <th id="th-p">Ratio %</th>
+                    <th id="th-c">Cost ($)</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+        <br>
+        <button onclick="exportPDF()" style="background: #27ae60;" id="btn-pdf">Download PDF Report</button>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        en: { title: "Pharmaceutical Formulator Pro", api: "Active Ingredient (mg)", form: "Dosage Form", goal: "Goal", calc: "Calculate", m: "Material", q: "Qty", p: "Ratio", c: "Cost" },
+        ar: { title: "مُصمم التركيبات الدوائية", api: "المادة الفعالة (ملجم)", form: "الشكل الدوائي", goal: "الهدف", calc: "احسب التركيبة", m: "المادة", q: "الكمية", p: "النسبة", c: "التكلفة" },
+        fr: { title: "Formulateur Pharmaceutique", api: "Ingrédient Actif (mg)", form: "Forme", goal: "Objectif", calc: "Calculer", m: "Matériel", q: "Qté", p: "Ratio", c: "Coût" },
+        de: { title: "Pharma-Formulierer Pro", api: "Wirkstoff (mg)", form: "Darreichungsform", goal: "Ziel", calc: "Berechnen", m: "Material", q: "Menge", p: "Verhältnis", c: "Kosten" }
+    };
+
+    let chart;
+
+    function changeLanguage() {
+        const l = document.getElementById('lang-switch').value;
+        const t = translations[l];
+        document.getElementById('title').innerText = t.title;
+        document.getElementById('lbl-api').innerText = t.api;
+        document.getElementById('lbl-form').innerText = t.form;
+        document.getElementById('lbl-goal').innerText = t.goal;
+        document.getElementById('btn-calc').innerText = t.calc;
+        document.getElementById('th-m').innerText = t.m;
+        document.getElementById('th-q').innerText = t.q;
+        document.getElementById('th-p').innerText = t.p;
+        document.getElementById('th-c').innerText = t.c;
+        
+        if(l === 'ar') document.getElementById('main-container').classList.add('rtl');
+        else document.getElementById('main-container').classList.remove('rtl');
+    }
+
+    function calculate() {
+        const apiName = document.getElementById('api-name').value || "API";
+        const mg = parseFloat(document.getElementById('api-mg').value);
+        const goal = document.getElementById('goal').value;
+
+        // خوارزمية مبسطة للتركيبة
+        const data = [
+            { m: apiName, q: mg, p: 70, c: (mg * 0.001).toFixed(3) },
+            { m: "Filler (Lactose)", q: mg * 0.3, p: 20, c: (mg * 0.3 * 0.0002).toFixed(3) },
+            { m: "Binder (PVP)", q: mg * 0.05, p: 7, c: (mg * 0.05 * 0.0005).toFixed(3) },
+            { m: "Lubricant", q: mg * 0.02, p: 3, c: (mg * 0.02 * 0.0008).toFixed(3) }
+        ];
+
+        let html = "";
+        data.forEach(item => {
+            html += `<tr><td>${item.m}</td><td>${item.q}</td><td>${item.p}%</td><td>${item.c}</td></tr>`;
+        });
+        document.getElementById('table-body').innerHTML = html;
+        document.getElementById('results-area').style.display = "block";
+
+        updateChart(data.map(d => d.m), data.map(d => d.q));
+    }
+
+    function updateChart(labels, values) {
+        if(chart) chart.destroy();
+        const ctx = document.getElementById('myChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{ data: values, backgroundColor: ['#3498db', '#95a5a6', '#f1c40f', '#e74c3c'] }]
+            }
+        });
+    }
+</script>
+</body>
+</html>
