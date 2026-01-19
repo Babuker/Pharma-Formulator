@@ -1,84 +1,83 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PharmaFormulator Enterprise Suite</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container" id="app-container">
         <div class="lang-switcher no-print">
             <select id="lang" onchange="updateUI()">
+                <option value="en" selected>English (Global Enterprise)</option>
                 <option value="ar">العربية (نسخة المؤسسات)</option>
-                <option value="en">English (Global Enterprise)</option>
             </select>
         </div>
 
         <div class="header">
-            <div class="security-stamp">CONFIDENTIAL - IP PROTECTED</div>
-            <h1 id="main-title">فارما فورميوليتور برو</h1>
-            <p id="sub-title">نظام التصنيع والخدمات اللوجستية العالمي</p>
+            <div class="security-stamp">CONFIDENTIAL - IP PROTECTED (Law 823-B)</div>
+            <h1 id="main-title">PharmaFormulator Pro</h1>
+            <p id="sub-title">Global Manufacturing & Logistics System</p>
         </div>
 
         <div class="config-grid no-print">
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-api">بيانات المادة الفعالة</label>
+                    <label id="lbl-api">API Name & Unit Dose (mg)</label>
                     <div class="flex-row">
-                        <input type="text" id="api-name" placeholder="اسم المادة (مثال: باراسيتامول)">
-                        <input type="number" id="api-dose" placeholder="الجرعة (ملجم)" value="500">
+                        <input type="text" id="api-name" placeholder="e.g., Paracetamol BP">
+                        <input type="number" id="api-dose" value="500">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label id="lbl-batch">حجم التشغيلة (عدد الوحدات)</label>
-                    <input type="number" id="batch-units" value="50000">
+                    <label id="lbl-batch">Batch Quantity (Total Units)</label>
+                    <input type="number" id="batch-units" value="100000">
                 </div>
                 <div class="input-group">
-                    <label id="lbl-form">الشكل الصيدلاني</label>
+                    <label id="lbl-form">Dosage Form Factor</label>
                     <select id="dosage-form">
-                        <option value="tablet">أقراص (Tablets)</option>
-                        <option value="syrup">شراب (Syrup)</option>
+                        <option value="tablet">Solid Oral (Tablet)</option>
+                        <option value="syrup">Liquid Oral (Syrup)</option>
                     </select>
                 </div>
             </div>
 
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-optimize">وضع تحسين التكاليف</label>
-                    <select id="cost-mode">
-                        <option value="manual">اختيار يدوي للمواد</option>
-                        <option value="auto">تحسين التكلفة تلقائياً (ذكاء اصطناعي)</option>
+                    <label id="lbl-optimize">Procurement Strategy</label>
+                    <select id="cost-mode" onchange="toggleManualSelect()">
+                        <option value="auto">AI-Auto (Best Price/Supplier)</option>
+                        <option value="manual">Manual Selection</option>
                     </select>
                 </div>
-                <div id="manual-materials">
-                    <select id="filler-select"></select>
-                    <select id="binder-select"></select>
+                <div id="manual-area" style="display:none;">
+                    <label>Preferred Raw Material Suppliers</label>
+                    <select id="supplier-select"></select>
                 </div>
-                <button class="btn-main" id="btn-run" onclick="runFormulator()">توليد التقرير الأمني</button>
+                <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Certified Report</button>
             </div>
         </div>
 
         <div id="results-area" class="result-section">
             <div class="report-header">
-                <h2 id="h-report-title">تقرير التصنيع المعتمد</h2>
+                <h2 id="h-report-title">Certified Manufacturing Report</h2>
                 <div id="audit-trail" class="audit-log"></div>
             </div>
 
             <div class="analysis-grid">
                 <div class="table-container">
-                    <h3 id="h-table">1. تحليل التركيبة الدوائية</h3>
+                    <h3 id="h-table">1. Detailed Formulation Breakdown</h3>
                     <table id="formula-table">
                         <thead>
                             <tr>
-                                <th id="th-m">المادة</th>
-                                <th id="th-r">الدور</th>
-                                <th id="th-q">الكمية/وحدة</th>
-                                <th id="th-c">التكلفة %</th>
+                                <th id="th-m">Material</th>
+                                <th id="th-r">Role</th>
+                                <th id="th-s">Approved Supplier</th>
+                                <th id="th-q">Qty/Unit</th>
+                                <th id="th-c">Cost %</th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
@@ -90,25 +89,23 @@
             </div>
 
             <div class="logistics-section">
-                <h3 id="h-logistics">2. التحليل اللوجستي والمستودعات</h3>
+                <h3 id="h-logistics">2. Warehouse & Pallet Analytics</h3>
                 <div class="info-grid" id="logistics-data"></div>
             </div>
 
             <div class="security-footer">
                 <div class="hash-box">
-                    <small id="lbl-hash-title">بصمة التشفير الأمنية (Trade Secret Hash):</small>
+                    <small id="lbl-hash-title">Digital Signature (GxP Authenticity):</small>
                     <code id="digital-sig"></code>
                 </div>
-                <div class="barcode-box">
-                    <svg id="barcode"></svg>
-                </div>
+                <div class="barcode-box"><svg id="barcode"></svg></div>
             </div>
 
-            <button class="btn-export no-print" onclick="downloadPDF()" id="btn-pdf">تصدير PDF معتمد</button>
+            <button class="btn-export no-print" onclick="window.print()" id="btn-pdf">Export to Global PDF</button>
         </div>
 
-        <div class="legal-disclaimer">
-            <p id="footer-text">© 2026 جميع حقوق الملكية الفكرية محفوظة. يخضع هذا المستند لقوانين حماية الأسرار التجارية الدولية.</p>
+        <div class="legal-footer">
+            <p id="footer-text">© 2026 PharmaFormulator Enterprise. Protected by International Trade Secret Laws. Unauthorized duplication prohibited.</p>
         </div>
     </div>
     <script src="script.js"></script>
