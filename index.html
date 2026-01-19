@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | AI Edition</title>
+    <title>PharmaFormulator Pro | Enterprise Edition</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -19,71 +18,65 @@
 
         <div class="header">
             <h2 id="main-title">PharmaFormulator Pro</h2>
+            <p style="font-size: 12px; color: #666;">Integrated Manufacturing & Logistics System</p>
         </div>
 
         <div class="config-grid no-print">
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-api">API & Dose (mg)</label>
+                    <label id="lbl-api">API Name & Dose (mg)</label>
                     <div style="display: flex; gap: 5px;">
-                        <input type="text" id="api-name" placeholder="Name" id="api-in">
+                        <input type="text" id="api-name" placeholder="e.g. Paracetamol">
                         <input type="number" id="api-dose" value="500">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label id="lbl-batch">Batch Size (Units)</label>
-                    <input type="number" id="batch-units" value="10000">
+                    <label id="lbl-batch">Batch Size (Total Units)</label>
+                    <input type="number" id="batch-units" value="50000">
                 </div>
             </div>
             <div class="card">
                 <div class="input-group">
                     <label id="lbl-form">Dosage Form</label>
                     <select id="dosage-form">
-                        <option value="tablet">Tablet (قرص)</option>
-                        <option value="syrup">Syrup (شراب)</option>
-                        <option value="capsule">Capsule (كبسولة)</option>
+                        <option value="tablet">Tablets (Blister Pack)</option>
+                        <option value="capsule">Capsules (Bottle Pack)</option>
+                        <option value="syrup">Syrup (Liquid Bottle)</option>
                     </select>
                 </div>
                 <div class="input-group">
                     <label id="lbl-ref">Reference</label>
-                    <select id="ref">
-                        <option>USP</option>
-                        <option>BP</option>
-                        <option>EUP</option>
-                    </select>
+                    <select id="ref"><option>USP</option><option>BP</option><option>EUP</option></select>
                 </div>
-                <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate</button>
+                <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Full Report</button>
             </div>
         </div>
 
         <div class="result-section" id="results">
-            <h3 id="h-table">1. Formulation Table | جدول التركيبة</h3>
+            <h3 id="h-table">1. Formulation Composition | جدول التركيبة</h3>
             <table id="formula-table">
                 <thead>
-                    <tr>
-                        <th id="th-m">Material</th>
-                        <th id="th-r">Role | الدور</th>
-                        <th id="th-q">Qty/Unit</th>
-                        <th id="th-wp">Weight %</th>
-                        <th id="th-cp">Cost %</th>
-                    </tr>
+                    <tr><th id="th-m">Material</th><th id="th-r">Role</th><th id="th-q">Qty/Unit</th><th id="th-wp">Wt %</th><th id="th-cp">Cost %</th></tr>
                 </thead>
                 <tbody id="table-body"></tbody>
             </table>
 
-            <h3 id="h-batch">2. Batch Information | معلومات التشغيلة</h3>
-            <div class="batch-info-grid" id="batch-summary"></div>
+            <h3 id="h-batch">2. Batch & Logistics Info | معلومات التشغيلة والخدمات اللوجستية</h3>
+            <div class="info-grid" id="batch-summary"></div>
 
-            <h3 id="h-steps">3. Manufacturing Steps | خطوات التصنيع</h3>
+            <h3 id="h-steps">3. Manufacturing Process | خطوات التصنيع</h3>
             <div id="manufacturing-steps" class="steps-container"></div>
 
-            <h3 id="h-rec">4. Recommendations & Tracking</h3>
+            <h3 id="h-storage">4. Warehouse Storage Estimation | تقدير مساحة التخزين</h3>
+            <div class="storage-card" id="storage-info"></div>
+
+            <h3 id="h-rec">5. Final Recommendations & Tracking</h3>
             <div class="ai-box" id="ai-rec-text"></div>
             <div class="barcode-area">
                 <svg id="barcode"></svg>
             </div>
 
-            <button class="btn-main no-print" style="background:#27ae60; margin-top:20px;" onclick="downloadPDF()">Export Professional PDF</button>
+            <button class="btn-main no-print" style="background:#27ae60; margin-top:20px;" onclick="downloadPDF()">Export Export PDF</button>
         </div>
     </div>
     <script src="script.js"></script>
