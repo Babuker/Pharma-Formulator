@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <div class="container" id="app-container">
@@ -24,100 +25,67 @@
             <div class="controls">
                 <div class="input-group">
                     <label id="lbl-api">API Name & Dose (mg)</label>
-                    <div style="display: flex; gap: 10px;">
+                    <div class="flex-row">
                         <input type="text" id="api-name" placeholder="e.g. Paracetamol">
                         <input type="number" id="api-dose" value="500">
                     </div>
                 </div>
+
+                <div class="input-group">
+                    <label id="lbl-ref">Reference Standard</label>
+                    <select id="ref">
+                        <option>USP</option>
+                        <option>BP</option>
+                        <option>EUP</option>
+                    </select>
+                </div>
+
                 <div class="input-group">
                     <label id="lbl-form">Dosage Form</label>
                     <select id="dosage-form">
-                        <option value="tablet">Plain Tablet</option>
-                        <option value="coated">Coated Tablet</option>
-                        <option value="capsule">Capsule</option>
-                        <option value="liquid">Liquid Syrup</option>
+                        <option value="tablet">Plain Tablet (قرص عادي)</option>
+                        <option value="coated">Coated Tablet (قرص مغلف)</option>
+                        <option value="capsule">Capsule (كبسولة)</option>
+                        <option value="liquid">Liquid Syrup (شراب سائل)</option>
                     </select>
                 </div>
+
                 <div class="input-group">
                     <label id="lbl-goal">Strategy</label>
                     <select id="strategy">
-                        <option value="balanced">Balanced</option>
-                        <option value="economic">Economic</option>
-                        <option value="quality">High Quality</option>
+                        <option value="balanced">Balanced (توازن)</option>
+                        <option value="economic">Economic (اقتصادي)</option>
+                        <option value="quality">Quality (جودة)</option>
                     </select>
                 </div>
+
                 <button class="btn-main" onclick="runFormulator()" id="btn-run">Generate Formulation</button>
             </div>
-            <div id="chart-container">
+
+            <div class="chart-box">
                 <canvas id="ctxChart"></canvas>
             </div>
         </div>
 
         <div class="result-section" id="results">
             <h2 id="res-title">Optimal Composition</h2>
-            <table id="formula-table">
-                <thead>
-                    <tr>
-                        <th id="th-item">Material</th>
-                        <th id="th-qty">Qty</th>
-                        <th id="th-cost">Cost ($)</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
-            <button class="btn-pdf" onclick="downloadPDF()">Download PDF Report</button>
+            <div class="table-responsive">
+                <table id="formula-table">
+                    <thead>
+                        <tr>
+                            <th id="th-m">Material</th>
+                            <th id="th-r">Role</th>
+                            <th id="th-q">Qty (mg)</th>
+                            <th id="th-p">Ratio %</th>
+                            <th id="th-c">Cost ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+            <button class="btn-pdf" onclick="downloadPDF()" id="btn-pdf">Export PDF Report</button>
         </div>
     </div>
-    <script src="translations.js"></script>
-    <script>
-        let chartInstance = null;
-        function updateUI() {
-            const l = document.getElementById('lang').value;
-            const t = translations[l];
-            document.getElementById('main-title').innerText = t.title;
-            document.getElementById('lbl-api').innerText = t.api;
-            document.getElementById('btn-run').innerText = t.run;
-            document.getElementById('app-container').className = (l === 'ar' ? 'container rtl' : 'container');
-        }
-
-        function runFormulator() {
-            const api = document.getElementById('api-name').value || "Active Ingredient";
-            const dose = parseFloat(document.getElementById('api-dose').value);
-            const form = document.getElementById('dosage-form').value;
-            
-            // Pharmaceutical Logic
-            let formula = [{ name: api, qty: dose, cost: 0.1 }];
-            if (form.includes('tablet')) {
-                formula.push({ name: "Lactose (Filler)", qty: dose * 0.5, cost: 0.02 });
-                formula.push({ name: "PVP K30 (Binder)", qty: dose * 0.05, cost: 0.01 });
-            } else {
-                formula.push({ name: "Sorbitol (Base)", qty: dose * 2, cost: 0.05 });
-            }
-
-            renderTable(formula);
-        }
-
-        function renderTable(data) {
-            let html = "";
-            data.forEach(item => {
-                html += `<tr><td>${item.name}</td><td>${item.qty.toFixed(2)}</td><td>${item.cost}</td></tr>`;
-            });
-            document.getElementById('table-body').innerHTML = html;
-            document.getElementById('results').style.display = "block";
-            updateChart(data);
-        }
-
-        function updateChart(data) {
-            const ctx = document.getElementById('ctxChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: data.map(i => i.name),
-                    datasets: [{ data: data.map(i => i.qty), backgroundColor: ['#2c3e50', '#27ae60', '#3498db'] }]
-                }
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
