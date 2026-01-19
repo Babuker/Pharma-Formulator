@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro</title>
+    <title>PharmaFormulator Pro | AI Edition</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,7 +12,7 @@
 <body>
     <div class="container" id="app-container">
         <div class="header">
-            <h1 id="main-title">PharmaFormulator Pro</h1>
+            <h1 id="main-title">PharmaFormulator Pro <span style="font-size: 0.5em; color: var(--success);">AI Core</span></h1>
             <select id="lang" onchange="updateUI()">
                 <option value="en">English</option>
                 <option value="ar">العربية</option>
@@ -22,68 +22,68 @@
         </div>
 
         <div class="config-grid">
-            <div class="controls">
+            <div class="controls card">
                 <div class="input-group">
-                    <label id="lbl-api">API Name & Dose (mg)</label>
-                    <div class="flex-row">
-                        <input type="text" id="api-name" placeholder="e.g. Paracetamol">
+                    <label id="lbl-api">API & Dose (mg)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="api-name" placeholder="Name">
                         <input type="number" id="api-dose" value="500">
                     </div>
                 </div>
-
                 <div class="input-group">
-                    <label id="lbl-ref">Reference Standard</label>
-                    <select id="ref">
-                        <option>USP</option>
-                        <option>BP</option>
-                        <option>EUP</option>
-                    </select>
+                    <label id="lbl-batch">Batch Size (Units)</label>
+                    <input type="number" id="batch-units" value="10000">
                 </div>
-
                 <div class="input-group">
                     <label id="lbl-form">Dosage Form</label>
                     <select id="dosage-form">
-                        <option value="tablet">Plain Tablet (قرص عادي)</option>
-                        <option value="coated">Coated Tablet (قرص مغلف)</option>
-                        <option value="capsule">Capsule (كبسولة)</option>
-                        <option value="liquid">Liquid Syrup (شراب سائل)</option>
+                        <option value="tablet">Plain Tablet</option>
+                        <option value="coated">Coated Tablet</option>
+                        <option value="capsule">Capsule</option>
+                        <option value="syrup">Liquid Syrup</option>
                     </select>
                 </div>
-
                 <div class="input-group">
-                    <label id="lbl-goal">Strategy</label>
-                    <select id="strategy">
-                        <option value="balanced">Balanced (توازن)</option>
-                        <option value="economic">Economic (اقتصادي)</option>
-                        <option value="quality">Quality (جودة)</option>
-                    </select>
+                    <label id="lbl-ref">Pharmacopoeia Reference</label>
+                    <select id="ref"><option>USP</option><option>BP</option><option>EUP</option></select>
                 </div>
-
-                <button class="btn-main" onclick="runFormulator()" id="btn-run">Generate Formulation</button>
+                <button class="btn-main" onclick="runAIFormulator()" id="btn-run">Analyze & Generate</button>
             </div>
 
-            <div class="chart-box">
+            <div class="chart-box card">
                 <canvas id="ctxChart"></canvas>
             </div>
         </div>
 
         <div class="result-section" id="results">
-            <h2 id="res-title">Optimal Composition</h2>
-            <div class="table-responsive">
-                <table id="formula-table">
-                    <thead>
-                        <tr>
-                            <th id="th-m">Material</th>
-                            <th id="th-r">Role</th>
-                            <th id="th-q">Qty (mg)</th>
-                            <th id="th-p">Ratio %</th>
-                            <th id="th-c">Cost ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body"></tbody>
-                </table>
+            <h2 id="res-title">Simulation Analysis</h2>
+            
+            <div class="summary-dashboard">
+                <div class="sum-item"><strong>Unit Weight:</strong> <span id="sum-unit-weight">-</span></div>
+                <div class="sum-item"><strong>Batch Weight:</strong> <span id="sum-batch-size">-</span></div>
+                <div class="sum-item"><strong>Batch Cost:</strong> $<span id="sum-total-cost">-</span></div>
+                <div class="sum-item"><strong>Reference:</strong> <span id="sum-ref">-</span></div>
             </div>
-            <button class="btn-pdf" onclick="downloadPDF()" id="btn-pdf">Export PDF Report</button>
+
+            <div class="ai-recommendation card">
+                <h4 style="margin:0; color: var(--primary);">🤖 AI Smart Recommendation:</h4>
+                <p id="ai-packaging-tip" style="font-style: italic;"></p>
+                <p id="ai-logic-note" style="font-size: 0.85em; color: #666;"></p>
+            </div>
+
+            <table id="formula-table">
+                <thead>
+                    <tr><th id="th-m">Material</th><th id="th-r">Role</th><th id="th-q">Unit Qty</th><th id="th-bq">Batch Qty</th></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+            
+            <button class="btn-pdf" onclick="downloadPDF()" id="btn-pdf">Export Professional Report</button>
+        </div>
+
+        <div class="legal-footer">
+            <p>© 2026 PharmaFormulator Pro | Intellectually Protected | Commercial Use Requires License</p>
+            <p><strong>Legal Disclaimer:</strong> Calculations based on AI-simulated algorithms. Final validation by Pharmacopoeia laboratory is mandatory.</p>
         </div>
     </div>
     <script src="script.js"></script>
