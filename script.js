@@ -75,7 +75,7 @@ function runFormulator() {
     const lang = document.getElementById('lang').value;
     const units = parseInt(document.getElementById('batch-units').value) || 0;
     const dose = parseFloat(document.getElementById('api-dose').value) || 0;
-    const apiName = document.getElementById('api-name').value || "B-772-API";
+    const apiNameInput = document.getElementById('api-name').value || "B-772-API";
     
     // AI Cost Optimization Logic
     let filler, binder, supplier;
@@ -90,7 +90,7 @@ function runFormulator() {
     }
 
     const formula = [
-        { name: apiName, role: UI_STRINGS[lang].active, source: supplier, qty: dose, cost: 0.008 },
+        { name: apiNameInput, role: UI_STRINGS[lang].active, source: supplier, qty: dose, cost: 0.008 },
         { name: lang==='en'?filler.en:filler.ar, role: UI_STRINGS[lang].filler, source: "Internal Stock", qty: dose * 0.55, cost: filler.cost },
         { name: lang==='en'?binder.en:binder.ar, role: UI_STRINGS[lang].binder, source: supplier, qty: dose * 0.1, cost: binder.cost }
     ];
@@ -124,7 +124,7 @@ function generateReport(formula, units, lang) {
 
     document.getElementById('audit-trail').innerHTML = `Certified Node: L-221 | Timestamp: ${new Date().toISOString()} | Regulatory Check: Pass`;
     
-    const hash = "PHARMA-SEC-" + btoa(apiName.value + Date.now()).substring(0, 10).toUpperCase();
+    const hash = "PHARMA-SEC-" + btoa(Date.now().toString()).substring(0, 10).toUpperCase();
     document.getElementById('digital-sig').innerText = hash;
     JsBarcode("#barcode", hash, { height: 35, displayValue: false });
 
