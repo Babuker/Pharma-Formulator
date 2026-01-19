@@ -3,102 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | Global Enterprise</title>
+    <title>PharmaFormulator Pro | Enterprise Edition</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container" id="app-container">
         <div class="lang-switcher no-print">
             <select id="lang" onchange="updateUI()">
-                <option value="en" selected>English (Default Global)</option>
-                <option value="ar">العربية (Enterprise Version)</option>
+                <option value="en" selected>English (Default)</option>
+                <option value="ar">العربية</option>
             </select>
         </div>
 
         <div class="header">
-            <div class="security-badge">GxP COMPLIANT - TRADE SECRET</div>
             <h1 id="main-title">PharmaFormulator Pro</h1>
-            <p id="sub-title">Integrated Manufacturing & Logistics Intelligence</p>
+            <p id="sub-title">Integrated Manufacturing & Logistics System</p>
         </div>
 
         <div class="config-grid no-print">
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-api">API Designation & Dose (mg)</label>
-                    <div class="flex-row">
-                        <input type="text" id="api-name" placeholder="API Name (e.g., Ibuprofen)">
-                        <input type="number" id="api-dose" value="400">
+                    <label id="lbl-api">API Name & Dose (mg)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="api-name" placeholder="API Name" value="LOT-001">
+                        <input type="number" id="api-dose" value="500">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label id="lbl-batch">Target Batch Size (Units)</label>
-                    <input type="number" id="batch-units" value="100000">
+                    <label id="lbl-batch">Batch Size (Total Units)</label>
+                    <input type="number" id="batch-units" value="50000">
                 </div>
             </div>
 
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-procure">Procurement Strategy</label>
-                    <select id="cost-mode" onchange="toggleManual()">
-                        <option value="auto">AI Optimization (Best Price)</option>
-                        <option value="manual">Manual Supplier Selection</option>
+                    <label id="lbl-form">Dosage Form</label>
+                    <select id="dosage-form">
+                        <option value="tablet">Tablet (قرص)</option>
+                        <option value="coated">Coated Tablet (قرص مغلف)</option>
+                        <option value="syrup">Liquid Syrup (شراب سائل)</option>
+                        <option value="dry_powder">Dry Powder Syrup (شراب جاف باودر)</option>
+                        <option value="capsule">Capsule (كابسول)</option>
                     </select>
                 </div>
-                <div class="input-group" id="supplier-group" style="display:none;">
-                    <label id="lbl-supplier">Preferred Raw Material Supplier</label>
-                    <select id="supplier-select"></select>
+                <div class="input-group">
+                    <label id="lbl-ref">Reference</label>
+                    <select id="ref">
+                        <option value="USP">USP</option>
+                        <option value="BP">BP</option>
+                        <option value="EUP">EUP</option>
+                    </select>
                 </div>
-                <button class="btn-main" id="btn-run" onclick="runFormulator()">Authorize & Generate Report</button>
+                <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Full Report</button>
             </div>
         </div>
 
-        <div id="results-area" class="result-section">
-            <div class="report-header">
-                <h2 id="h-report-title">Certified Formulation Analysis</h2>
-                <div id="audit-trail" class="audit-log"></div>
-            </div>
+        <div class="result-section" id="results">
+            <h3 id="h-table">1. Formulation Composition | جدول التركيبة</h3>
+            <table id="formula-table">
+                <thead>
+                    <tr><th id="th-m">Material</th><th id="th-r">Role</th><th id="th-q">Qty/Unit</th><th id="th-wp">Wt %</th><th id="th-cp">Cost %</th></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
 
-            <div class="analysis-grid">
-                <div class="table-container">
-                    <h3 id="h-table">1. Material Composition Breakdown</h3>
-                    <table id="formula-table">
-                        <thead>
-                            <tr>
-                                <th id="th-m">Material</th>
-                                <th id="th-r">Function</th>
-                                <th id="th-s">Supplier Source</th>
-                                <th id="th-q">Qty/Unit</th>
-                                <th id="th-c">Cost Distribution</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body"></tbody>
-                    </table>
-                </div>
-                <div class="chart-container">
-                    <canvas id="costChart"></canvas>
-                </div>
-            </div>
+            <h3 id="h-batch">2. Batch & Logistics Info | معلومات التشغيلة</h3>
+            <div class="info-grid" id="batch-summary"></div>
 
-            <div class="logistics-section">
-                <h3 id="h-logistics">2. Logistics & Warehouse Footprint</h3>
-                <div class="info-grid" id="logistics-data"></div>
-            </div>
+            <h3 id="h-steps">3. Manufacturing Process | خطوات التصنيع</h3>
+            <div id="manufacturing-steps" class="steps-container"></div>
+
+            <h3 id="h-rec">4. Final Recommendations & Storage | التوصيات النهائية</h3>
+            <div class="recommendation-card" id="logistics-recommendations"></div>
 
             <div class="security-footer">
-                <div class="hash-box">
-                    <small id="lbl-hash">Digital Signature (GxP Authenticity):</small>
-                    <code id="digital-sig"></code>
-                </div>
-                <div class="barcode-box"><svg id="barcode"></svg></div>
+                <div class="barcode-area"><svg id="barcode"></svg></div>
+                <button class="btn-main no-print" style="background:#27ae60; width: auto; padding: 10px 30px;" onclick="window.print()">Export PDF</button>
             </div>
-
-            <button class="btn-export no-print" onclick="window.print()" id="btn-pdf">Download Secure PDF</button>
-        </div>
-
-        <div class="legal-disclaimer">
-            <p id="footer-text">© 2026 PharmaFormulator Enterprise. Intellectual Property Protected by International Trade Secret Law.</p>
         </div>
     </div>
     <script src="script.js"></script>
