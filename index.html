@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | Enterprise</title>
+    <title>PharmaFormulator Pro | Enterprise Edition</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container" id="app-container">
-        <select id="lang" onchange="updateUI()" class="no-print" style="position: absolute; top: 15px; right: 15px;">
+        <select id="lang" onchange="updateUI()" class="lang-mini no-print">
             <option value="en" selected>EN</option>
             <option value="ar">AR</option>
         </select>
@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="input-group">
                     <label id="lbl-api">API Name & Dose (mg)</label>
-                    <div style="display: flex; gap: 10px;">
+                    <div class="flex-row">
                         <input type="text" id="api-name" placeholder="API Name" value="Paracetamol">
                         <input type="number" id="api-dose" value="500">
                     </div>
@@ -37,11 +37,11 @@
 
             <div class="card">
                 <div class="input-group">
-                    <label id="lbl-strategy">Formulation Strategy | استراتيجية التركيبة</label>
+                    <label id="lbl-strategy">Formulation Strategy</label>
                     <select id="strategy">
-                        <option value="balanced">Balanced (التوازن - Standard)</option>
-                        <option value="economy">Economy (اقتصادية - Min Cost)</option>
-                        <option value="quality">Premium Quality (جودة عالية)</option>
+                        <option value="balanced">Balanced (توازن)</option>
+                        <option value="economy">Economy (اقتصادي)</option>
+                        <option value="quality">Premium Quality (جودة)</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -59,13 +59,21 @@
         </div>
 
         <div class="result-section" id="results">
-            <h3 id="h-table">1. Formulation Composition | جدول التركيبة</h3>
-            <table id="formula-table">
-                <thead>
-                    <tr><th id="th-m">Material</th><th id="th-r">Role</th><th id="th-q">Qty/Unit</th><th id="th-wp">Wt %</th><th id="th-cp">Cost %</th></tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
+            <h3 id="h-table">1. Formulation Composition | جدول التركيبة والمواد المضافة</h3>
+            <div class="table-container">
+                <table id="formula-table">
+                    <thead>
+                        <tr>
+                            <th id="th-m">Material</th>
+                            <th id="th-r">Function / Role</th>
+                            <th id="th-q">Qty/Unit</th>
+                            <th id="th-wp">Wt %</th>
+                            <th id="th-cp">Cost %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
 
             <div class="analysis-grid">
                 <div class="chart-box">
@@ -73,12 +81,12 @@
                 </div>
                 <div class="details-box">
                     <h3 id="h-batch">2. Batch Details | تفاصيل التشغيلة</h3>
-                    <div id="batch-summary" class="batch-details-list"></div>
+                    <div id="batch-summary"></div>
                 </div>
             </div>
 
-            <h3 id="h-rec">3. Logistics & Recommendations</h3>
-            <div id="logistics-data" class="info-grid"></div>
+            <h3 id="h-rec">3. Manufacturing & Storage Recommendations | التوصيات</h3>
+            <div id="logistics-recommendations" class="rec-grid"></div>
 
             <div class="security-footer">
                 <div class="barcode-area"><svg id="barcode"></svg></div>
