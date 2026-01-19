@@ -1,0 +1,12 @@
+body { font-family: sans-serif; background: #f4f4f9; padding: 20px; color: #333; }
+.container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+.input-group { margin-bottom: 15px; }
+input, select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; }
+.btn-main { background: #2c3e50; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 5px; }
+.result-section { display: none; margin-top: 30px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; border: 1px solid #eee; text-align: left; }
+.rtl { direction: rtl; }
+.rtl th, .rtl td { text-align: right; }
