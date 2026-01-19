@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | Enterprise</title>
+    <title>PharmaFormulator Pro | Enterprise Edition</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,7 +17,7 @@
 
         <div class="header">
             <h1 id="main-title">PharmaFormulator Pro</h1>
-            <p id="sub-title">Manufacturing & Logistics Intelligence</p>
+            <p id="sub-title">Integrated Manufacturing & Logistics System</p>
         </div>
 
         <div class="config-grid no-print">
@@ -47,11 +47,11 @@
                 <div class="input-group">
                     <label id="lbl-form">Dosage Form</label>
                     <select id="dosage-form">
-                        <option value="tablet">Tablets</option>
-                        <option value="coated">Coated Tablets</option>
-                        <option value="syrup">Liquid Syrup</option>
-                        <option value="dry_powder">Dry Powder</option>
-                        <option value="capsule">Capsules</option>
+                        <option value="tablet">Tablets (أقراص)</option>
+                        <option value="coated">Coated Tablets (أقراص مغلفة)</option>
+                        <option value="syrup">Liquid Syrup (شراب سائل)</option>
+                        <option value="dry_powder">Dry Powder (شراب جاف)</option>
+                        <option value="capsule">Capsules (كبسولات)</option>
                     </select>
                 </div>
                 <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Report</button>
@@ -65,9 +65,9 @@
                     <thead>
                         <tr>
                             <th id="th-m">Material</th>
-                            <th id="th-r">Function</th>
-                            <th id="th-q">Qty/Unit</th>
-                            <th id="th-wp">Wt %</th>
+                            <th id="th-r">Function / Role</th>
+                            <th id="th-q">Qty/Unit (mg)</th>
+                            <th id="th-wp">Weight %</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <h3 id="h-rec">3. Recommendations</h3>
+            <h3 id="h-rec">3. Manufacturing & Storage Recommendations</h3>
             <div id="rec-content" class="rec-grid"></div>
 
             <div class="security-footer">
