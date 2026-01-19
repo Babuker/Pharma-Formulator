@@ -1,89 +1,87 @@
-const translations = {
-    en: { title: "PharmaFormulator Pro (AI)", batch: "Batch Size (Units)", run: "Run Analysis", unit: "Unit Wt", bWt: "Batch Wt", cost: "Total Cost", packing: "AI Packaging Advice" },
-    ar: { title: "خبير الصياغة الدوائية الذكي", batch: "حجم التشغيلة (وحدة)", run: "بدء التحليل والتركيب", unit: "وزن الوحدة", bWt: "وزن التشغيلة", cost: "التكلفة الكلية", packing: "توصية التغليف الذكية" }
-};
+// إضافة مكتبة الباركود برمجياً
+const script = document.createElement('script');
+script.src = "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js";
+document.head.appendChild(script);
 
-let chartInstance = null;
+const translations = {
+    en: { run: "Generate Formulation", batch: "Batch Info", rec: "Recommendations", pdf: "Export PDF", role_api: "Active (API)", role_filler: "Filler", role_bind: "Binder", role_dis: "Disintegrant", role_lub: "Lubricant" },
+    ar: { run: "توليد التركيبة", batch: "معلومات التشغيلة", rec: "التوصيات الإضافية", pdf: "تصدير ملف PDF", role_api: "مادة علاجية فعالة", role_filler: "مادة مالئة", role_bind: "مادة ربط", role_dis: "مادة تفكك", role_lub: "مادة مزلقة" }
+};
 
 function updateUI() {
     const l = document.getElementById('lang').value;
-    const t = translations[l] || translations.en;
-    document.getElementById('main-title').innerText = t.title;
     document.getElementById('app-container').className = (l === 'ar' ? 'container rtl' : 'container');
+    document.getElementById('btn-run').innerText = translations[l].run;
 }
 
-function runAIFormulator() {
-    const name = document.getElementById('api-name').value || "API";
+function runFormulator() {
+    const apiName = document.getElementById('api-name').value || "API-101";
     const dose = parseFloat(document.getElementById('api-dose').value) || 0;
     const batchUnits = parseInt(document.getElementById('batch-units').value) || 1000;
     const form = document.getElementById('dosage-form').value;
     const ref = document.getElementById('ref').value;
+    const l = document.getElementById('lang').value;
+    const t = translations[l];
 
-    // --- خوارزمية AI للتغليف ---
-    let packRec = "";
-    let aiReason = "";
+    // مصفوفة المكونات مع منطق التكلفة والوزن
+    let formula = [
+        { name: apiName, role: t.role_api, qty: dose, pricePerMg: 0.005 }
+    ];
+
     if (form.includes("tablet")) {
-        packRec = "Blister (Alu-PVC) or Strip Pack";
-        aiReason = "AI Logic: Recommended for high mechanical stability and protection from oxidation.";
-    } else if (form === "capsule") {
-        packRec = "PVC/PVDC Blister or HDPE Bottles";
-        aiReason = "AI Logic: Detected moisture sensitivity in gelatin shell; enhanced moisture barrier required.";
-    } else {
-        packRec = "Amber Glass Bottle (UV Protection)";
-        aiReason = "AI Logic: Fluid state detected; UV blocking glass required to prevent photo-degradation.";
+        formula.push({ name: "Avicel PH102", role: t.role_filler, qty: dose * 0.5, pricePerMg: 0.0001 });
+        formula.push({ name: "PVP K30", role: t.role_bind, qty: dose * 0.05, pricePerMg: 0.0003 });
+        formula.push({ name: "SSG", role: t.role_dis, qty: dose * 0.04, pricePerMg: 0.0002 });
+        formula.push({ name: "Mg Stearate", role: t.role_lub, qty: dose * 0.01, pricePerMg: 0.0004 });
     }
 
-    // --- خوارزمية حساب التشغيلة والتكلفة ---
-    let formula = [ { name: name, role: "API", qty: dose, cost: 0.0007 } ];
-    if (form.includes("tablet")) {
-        formula.push({ name: "Cellulose (Filler)", role: "Excipient", qty: dose * 0.5, cost: 0.0001 });
-        formula.push({ name: "Stearate (Lubricant)", role: "Excipient", qty: dose * 0.02, cost: 0.0004 });
-    } else {
-        formula.push({ name: "Sorbitol (Base)", role: "Vehicle", qty: dose * 6, cost: 0.00005 });
-    }
-
-    renderResults(formula, batchUnits, ref, packRec, aiReason);
+    calculateAndDisplay(formula, batchUnits, ref, form, l);
 }
 
-function renderResults(formula, units, ref, pack, reason) {
-    let unitWeight = formula.reduce((s, i) => s + i.qty, 0);
-    let totalCost = formula.reduce((s, i) => s + (i.qty * i.cost * units), 0);
-    let batchWeightKg = (unitWeight * units) / 1000000;
+function calculateAndDisplay(formula, units, ref, form, l) {
+    const unitWeight = formula.reduce((s, i) => s + i.qty, 0);
+    const unitCost = formula.reduce((s, i) => s + (i.qty * i.pricePerMg), 0);
+    const batchWeight = (unitWeight * units) / 1000000; // Kg
+    const batchCost = unitCost * units;
 
-    document.getElementById('sum-unit-weight').innerText = unitWeight.toFixed(2) + " mg";
-    document.getElementById('sum-batch-size').innerText = batchWeightKg.toFixed(2) + " kg";
-    document.getElementById('sum-total-cost').innerText = totalCost.toLocaleString();
-    document.getElementById('sum-ref').innerText = ref;
-    document.getElementById('ai-packaging-tip').innerHTML = `<strong>${pack}</strong><br><small>${reason}</small>`;
-
+    // 1. جدول التركيبة
     let html = "";
-    formula.forEach(i => {
-        let bQty = (i.qty * units) / 1000;
-        html += `<tr><td>${i.name}</td><td>${i.role}</td><td>${i.qty.toFixed(2)}</td><td>${bQty.toFixed(2)} g</td></tr>`;
+    formula.forEach(item => {
+        const weightPct = ((item.qty / unitWeight) * 100).toFixed(1);
+        const costPct = (((item.qty * item.pricePerMg) / unitCost) * 100).toFixed(1);
+        html += `<tr>
+            <td>${item.name}</td>
+            <td>${item.role}</td>
+            <td>${item.qty.toFixed(2)} mg</td>
+            <td>${weightPct}%</td>
+            <td>${costPct}%</td>
+        </tr>`;
     });
     document.getElementById('table-body').innerHTML = html;
-    document.getElementById('results').style.display = "block";
-    updateChart(formula);
-}
 
-function updateChart(data) {
-    const ctx = document.getElementById('ctxChart').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: data.map(i => i.name),
-            datasets: [{ data: data.map(i => i.qty), backgroundColor: ['#1a2a6c', '#27ae60', '#f39c12', '#b21f1f'] }]
-        }
-    });
+    // 2. معلومات التشغيلة
+    document.getElementById('batch-summary').innerHTML = `
+        <div class="info-item"><strong>Batch Size:</strong> ${units.toLocaleString()} Units</div>
+        <div class="info-item"><strong>Batch Weight:</strong> ${batchWeight.toFixed(3)} Kg</div>
+        <div class="info-item"><strong>Unit Weight:</strong> ${unitWeight.toFixed(2)} mg</div>
+        <div class="info-item"><strong>Batch Cost:</strong> $${batchCost.toFixed(2)}</div>
+        <div class="info-item"><strong>Reference:</strong> ${ref} Standard</div>
+    `;
+
+    // 3. التوصيات
+    let rec = form === "tablet" ? "Recommended: Blister ALU/PVC. Store below 25°C." : "Recommended: Amber Glass Bottle. Avoid direct light.";
+    document.getElementById('ai-rec-text').innerText = rec;
+
+    // 4. الباركود
+    JsBarcode("#barcode", apiName + "-" + units, { format: "CODE128", height: 40, displayValue: true });
+
+    document.getElementById('results').style.display = "block";
 }
 
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("PharmaFormulator AI Batch Report", 14, 15);
+    doc.text("PharmaFormulator Professional Report", 14, 15);
     doc.autoTable({ html: '#formula-table', startY: 25 });
-    doc.save("Batch_Report.pdf");
+    doc.save("Formulation_Report.pdf");
 }
-
-updateUI();
