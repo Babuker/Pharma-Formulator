@@ -1,0 +1,20 @@
+{
+  "api_name": "Ibuprofen",
+  "api_dose": "200",
+  "api_dose_unit": "mg",
+  "dosage_form": "tablet",
+  "batch_size": "500000",
+  "batch_unit": "tablets",
+  "regulatory_target": "USP_FDA",
+  "strategy": "low_cost",
+  "excipient_mode": "auto",
+  "additional_requirements": {
+    "disintegration_time": "<15 minutes",
+    "hardness": "5-10 kp",
+    "friability": "<1%"
+  },
+  "cost_constraints": {
+    "max_cost_per_tablet": "0.05",
+    "currency": "USD"
+  }
+}
