@@ -1,0 +1,113 @@
+{
+  "microcrystalline_cellulose": {
+    "name": "Microcrystalline Cellulose",
+    "aliases": ["MCC", "Avicel", "Celhere"],
+    "functions": ["diluent", "binder", "disintegrant"],
+    "compatible_forms": ["tablet", "capsule", "granule"],
+    "typical_concentration": {
+      "min": 10,
+      "max": 90,
+      "unit": "%"
+    },
+    "compliance": {
+      "USP_FDA": {
+        "monograph": "USP-NF",
+        "max_percentage": 90,
+        "restrictions": "None for oral solid dosage forms"
+      },
+      "BP": {
+        "monograph": "Ph Eur 2.8.1",
+        "max_percentage": 90
+      },
+      "EP": {
+        "monograph": "Ph Eur 2.8.1",
+        "max_percentage": 90
+      }
+    },
+    "physical_properties": {
+      "density": "0.3-0.5 g/cm³",
+      "particle_size": "50-200 μm",
+      "moisture_content": "<5%",
+      "flowability": "Good to excellent"
+    },
+    "stability": {
+      "hygroscopicity": "Slightly hygroscopic",
+      "storage": "Store in airtight container",
+      "incompatibilities": "Strong oxidizers"
+    },
+    "cost": {
+      "range_usd_per_kg": "8-15",
+      "grade": "Pharmaceutical"
+    },
+    "suppliers": ["DuPont", "JRS Pharma", "Mingtai", "Asahi Kasei"]
+  },
+  
+  "croscarmellose_sodium": {
+    "name": "Croscarmellose Sodium",
+    "aliases": ["CCS", "Ac-Di-Sol", "Primellose"],
+    "functions": ["superdisintegrant"],
+    "compatible_forms": ["tablet", "capsule"],
+    "typical_concentration": {
+      "min": 1,
+      "max": 5,
+      "unit": "%"
+    },
+    "compliance": {
+      "USP_FDA": {
+        "monograph": "USP-NF",
+        "max_percentage": 5
+      },
+      "BP": {
+        "monograph": "Ph Eur 2.8.1",
+        "max_percentage": 5
+      }
+    },
+    "cost": {
+      "range_usd_per_kg": "70-90",
+      "grade": "Pharmaceutical"
+    }
+  },
+  
+  "magnesium_stearate": {
+    "name": "Magnesium Stearate",
+    "functions": ["lubricant", "glidant"],
+    "compatible_forms": ["tablet", "capsule", "powder"],
+    "typical_concentration": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "%"
+    },
+    "compliance": {
+      "USP_FDA": {
+        "monograph": "USP-NF",
+        "max_percentage": 2
+      }
+    },
+    "cost": {
+      "range_usd_per_kg": "15-25",
+      "grade": "Pharmaceutical"
+    }
+  },
+  
+  "lactose_monohydrate": {
+    "name": "Lactose Monohydrate",
+    "functions": ["diluent", "binder"],
+    "compatible_forms": ["tablet", "capsule", "powder"],
+    "typical_concentration": {
+      "min": 20,
+      "max": 90,
+      "unit": "%"
+    },
+    "compliance": {
+      "USP_FDA": {
+        "monograph": "USP-NF",
+        "max_percentage": 90,
+        "note": "Not for lactose-intolerant patients"
+      }
+    },
+    "cost": {
+      "range_usd_per_kg": "5-10",
+      "grade": "Pharmaceutical"
+    }
+  }
+}
