@@ -3,96 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaFormulator Pro | Enterprise Edition</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Chemical Formula Optimizer | AI-Powered Pharmaceutical Formulation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
 <body>
-    <div class="container" id="app-container">
-        <select id="lang" onchange="updateUI()" class="lang-selector no-print">
-            <option value="en" selected>English</option>
-            <option value="ar">العربية</option>
-        </select>
-
-        <div class="header">
-            <h1 id="main-title">PharmaFormulator Pro</h1>
-            <p id="sub-title">Integrated Manufacturing & Logistics System</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-flask"></i>
+                <span>Chemical Formula Optimizer</span>
+            </div>
+            <div class="nav-links">
+                <a href="#optimizer"><i class="fas fa-cogs"></i> Optimizer</a>
+                <a href="#results"><i class="fas fa-chart-bar"></i> Results</a>
+                <a href="#database"><i class="fas fa-database"></i> Database</a>
+                <a href="#about"><i class="fas fa-info-circle"></i> About</a>
+            </div>
         </div>
+    </nav>
 
-        <div class="config-grid no-print">
-            <div class="card">
-                <div class="input-group">
-                    <label id="lbl-api">API Name & Dose (mg)</label>
-                    <div class="flex-row">
-                        <input type="text" id="api-name" placeholder="API Name" value="Paracetamol">
-                        <input type="number" id="api-dose" value="500">
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1><i class="fas fa-robot"></i> AI-Powered Pharmaceutical Formulation</h1>
+            <p class="subtitle">Optimize chemical formulations with genetic algorithms. Reduce costs by up to 40% while maintaining regulatory compliance.</p>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">40%</span>
+                    <span class="stat-label">Cost Reduction</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Compliance</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">AI</span>
+                    <span class="stat-label">Optimization</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Input Form Section -->
+        <section id="optimizer" class="card form-section">
+            <div class="section-header">
+                <h2><i class="fas fa-sliders-h"></i> Formulation Parameters</h2>
+                <p class="section-subtitle">Configure your pharmaceutical formulation for optimization</p>
+            </div>
+
+            <form id="optimizationForm">
+                <div class="form-grid">
+                    <!-- API Information -->
+                    <div class="form-group card">
+                        <h3><i class="fas fa-pills"></i> API Information</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="apiName"><i class="fas fa-tag"></i> API Name *</label>
+                                <input type="text" id="apiName" name="apiName" placeholder="e.g., Ibuprofen, Paracetamol" required>
+                                <div class="hint">Enter the active pharmaceutical ingredient name</div>
+                            </div>
+                            <div class="form-field">
+                                <label for="apiDose"><i class="fas fa-weight-hanging"></i> Unit Dose *</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="apiDose" name="apiDose" step="0.01" min="0.01" placeholder="200" required>
+                                    <select id="apiDoseUnit" name="apiDoseUnit">
+                                        <option value="mg">mg</option>
+                                        <option value="g">g</option>
+                                        <option value="μg">μg</option>
+                                        <option value="mL">mL</option>
+                                    </select>
+                                </div>
+                                <div class="hint">Amount per unit dose</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dosage Form & Batch -->
+                    <div class="form-group card">
+                        <h3><i class="fas fa-tablets"></i> Production Specifications</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="dosageForm"><i class="fas fa-shapes"></i> Dosage Form *</label>
+                                <select id="dosageForm" name="dosageForm" required>
+                                    <option value="">Select dosage form</option>
+                                    <option value="tablet">Tablet</option>
+                                    <option value="capsule">Capsule</option>
+                                    <option value="liquid">Liquid/Solution</option>
+                                    <option value="ointment">Ointment/Cream</option>
+                                    <option value="powder">Powder</option>
+                                    <option value="injection">Injection</option>
+                                </select>
+                                <div class="hint">Select the pharmaceutical dosage form</div>
+                            </div>
+                            <div class="form-field">
+                                <label for="batchSize"><i class="fas fa-industry"></i> Batch Size *</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="batchSize" name="batchSize" min="100" placeholder="500000" required>
+                                    <select id="batchUnit" name="batchUnit">
+                                        <option value="tablets">Tablets</option>
+                                        <option value="capsules">Capsules</option>
+                                        <option value="bottles">Bottles</option>
+                                        <option value="tubes">Tubes</option>
+                                        <option value="kg">kg</option>
+                                        <option value="L">Liters</option>
+                                    </select>
+                                </div>
+                                <div class="hint">Total production batch size</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compliance & Strategy -->
+                    <div class="form-group card">
+                        <h3><i class="fas fa-balance-scale"></i> Optimization Strategy</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="regulatoryTarget"><i class="fas fa-file-contract"></i> Regulatory Compliance *</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="regulatoryTarget" value="USP_FDA" checked>
+                                        <span class="radio-checkmark"></span>
+                                        <span class="radio-label">
+                                            <i class="fas fa-flag-usa"></i> USP + FDA
+                                        </span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="regulatoryTarget" value="BP">
+                                        <span class="radio-checkmark"></span>
+                                        <span class="radio-label">
+                                            <i class="fas fa-landmark"></i> British Pharmacopoeia
+                                        </span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="regulatoryTarget" value="EP">
+                                        <span class="radio-checkmark"></span>
+                                        <span class="radio-label">
+                                            <i class="fas fa-globe-europe"></i> European Pharmacopoeia
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="hint">Select target regulatory framework</div>
+                            </div>
+                            <div class="form-field">
+                                <label for="strategy"><i class="fas fa-bullseye"></i> Optimization Strategy *</label>
+                                <div class="strategy-buttons">
+                                    <label class="strategy-option" data-strategy="low_cost">
+                                        <input type="radio" name="strategy" value="low_cost" checked>
+                                        <div class="strategy-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+                                        <div class="strategy-content">
+                                            <span class="strategy-title">Low Cost</span>
+                                            <span class="strategy-desc">Minimize formulation cost</span>
+                                        </div>
+                                    </label>
+                                    <label class="strategy-option" data-strategy="high_stability">
+                                        <input type="radio" name="strategy" value="high_stability">
+                                        <div class="strategy-icon">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </div>
+                                        <div class="strategy-content">
+                                            <span class="strategy-title">High Stability</span>
+                                            <span class="strategy-desc">Maximize shelf life</span>
+                                        </div>
+                                    </label>
+                                    <label class="strategy-option" data-strategy="standard">
+                                        <input type="radio" name="strategy" value="standard">
+                                        <div class="strategy-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="strategy-content">
+                                            <span class="strategy-title">Standard</span>
+                                            <span class="strategy-desc">Balance cost & performance</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Excipient Selection -->
+                    <div class="form-group card">
+                        <h3><i class="fas fa-vial"></i> Excipient Selection</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="excipientMode"><i class="fas fa-robot"></i> Selection Mode</label>
+                                <div class="toggle-group">
+                                    <label class="toggle-option active" id="toggleAuto">
+                                        <i class="fas fa-robot"></i> Auto (AI Recommended)
+                                    </label>
+                                    <label class="toggle-option" id="toggleManual">
+                                        <i class="fas fa-hand-pointer"></i> Manual Selection
+                                    </label>
+                                    <input type="hidden" id="excipientMode" name="excipientMode" value="auto">
+                                </div>
+                                <div class="hint">Let AI select optimal excipients or choose manually</div>
+                            </div>
+                            <div class="form-field" id="manualExcipientSection" style="display: none;">
+                                <label><i class="fas fa-list"></i> Select Excipients</label>
+                                <div class="excipient-selector" id="excipientSelector">
+                                    <!-- Will be populated by JavaScript -->
+                                    <div class="loading-excipients">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading excipient database...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Requirements -->
+                    <div class="form-group card">
+                        <h3><i class="fas fa-clipboard-check"></i> Additional Requirements</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="disintegrationTime"><i class="fas fa-hourglass-half"></i> Disintegration Time</label>
+                                <input type="text" id="disintegrationTime" name="disintegrationTime" placeholder="e.g., <15 minutes">
+                            </div>
+                            <div class="form-field">
+                                <label for="maxCost"><i class="fas fa-dollar-sign"></i> Max Cost Per Unit</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="maxCost" name="maxCost" step="0.001" min="0.001" placeholder="0.05">
+                                    <span class="unit">USD</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label for="additionalNotes"><i class="fas fa-sticky-note"></i> Additional Notes</label>
+                            <textarea id="additionalNotes" name="additionalNotes" rows="3" placeholder="Any special requirements or constraints..."></textarea>
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label id="lbl-batch">Batch Size (Units)</label>
-                    <input type="number" id="batch-units" value="50000">
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" id="resetBtn" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Reset Form
+                    </button>
+                    <button type="submit" id="optimizeBtn" class="btn btn-primary">
+                        <i class="fas fa-cogs"></i> Optimize Formulation
+                    </button>
+                    <button type="button" id="loadSampleBtn" class="btn btn-outline">
+                        <i class="fas fa-vial"></i> Load Sample
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="card results-section" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Optimization Results</h2>
+                <div class="results-actions">
+                    <button id="exportPdfBtn" class="btn btn-success">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button id="exportJsonBtn" class="btn btn-outline">
+                        <i class="fas fa-file-code"></i> Export JSON
+                    </button>
+                    <button id="newOptimizationBtn" class="btn btn-secondary">
+                        <i class="fas fa-plus"></i> New Optimization
+                    </button>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="input-group">
-                    <label id="lbl-strategy">Formulation Strategy</label>
-                    <select id="strategy">
-                        <option value="balanced">Balanced (توازن)</option>
-                        <option value="economy">Economy (اقتصادي)</option>
-                        <option value="quality">Premium Quality (جودة)</option>
-                    </select>
+            <div class="loading-results" id="loadingResults">
+                <div class="loading-spinner">
+                    <i class="fas fa-atom fa-spin"></i>
                 </div>
-                <div class="input-group">
-                    <label id="lbl-form">Dosage Form</label>
-                    <select id="dosage-form">
-                        <option value="tablet">Tablets (أقراص)</option>
-                        <option value="coated">Coated Tablets (أقراص مغلفة)</option>
-                        <option value="syrup">Liquid Syrup (شراب سائل)</option>
-                        <option value="dry_powder">Dry Powder (شراب جاف)</option>
-                        <option value="capsule">Capsules (كبسولات)</option>
-                    </select>
+                <h3>Optimizing Formulation with AI</h3>
+                <p>Running genetic algorithms to find the optimal formulation...</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
                 </div>
-                <button class="btn-main" id="btn-run" onclick="runFormulator()">Generate Report</button>
+                <div class="loading-steps">
+                    <div class="step active"><i class="fas fa-check"></i> Validating inputs</div>
+                    <div class="step"><i class="fas fa-spinner fa-spin"></i> Checking compliance</div>
+                    <div class="step"><i class="fas fa-spinner"></i> Optimizing formula</div>
+                    <div class="step"><i class="fas fa-spinner"></i> Calculating costs</div>
+                    <div class="step"><i class="fas fa-spinner"></i> Generating report</div>
+                </div>
             </div>
-        </div>
 
-        <div class="result-section" id="results">
-            <h3 id="h-table">1. Formulation Composition</h3>
-            <div class="table-container">
-                <table>
+            <div id="resultsContent" style="display: none;">
+                <!-- Results will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Excipient Database Section -->
+        <section id="database" class="card database-section">
+            <div class="section-header">
+                <h2><i class="fas fa-database"></i> Excipient Database</h2>
+                <p class="section-subtitle">Browse pharmaceutical excipients with regulatory information</p>
+            </div>
+            
+            <div class="database-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="excipientSearch" placeholder="Search excipients by name, function, or property...">
+                </div>
+                <div class="filter-group">
+                    <select id="filterFunction">
+                        <option value="">All Functions</option>
+                        <option value="diluent">Diluent</option>
+                        <option value="binder">Binder</option>
+                        <option value="disintegrant">Disintegrant</option>
+                        <option value="lubricant">Lubricant</option>
+                        <option value="glidant">Glidant</option>
+                        <option value="coating">Coating</option>
+                    </select>
+                    <select id="filterCompliance">
+                        <option value="">All Standards</option>
+                        <option value="USP_FDA">USP/FDA</option>
+                        <option value="BP">BP</option>
+                        <option value="EP">EP</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="database-table-container">
+                <table class="database-table">
                     <thead>
                         <tr>
-                            <th id="th-m">Material</th>
-                            <th id="th-r">Function / Role</th>
-                            <th id="th-q">Qty/Unit (mg)</th>
-                            <th id="th-wp">Weight %</th>
+                            <th>Excipient Name</th>
+                            <th>Function</th>
+                            <th>Typical %</th>
+                            <th>Compliance</th>
+                            <th>Cost (USD/kg)</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="table-body"></tbody>
+                    <tbody id="excipientTableBody">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
                 </table>
             </div>
+            
+            <div class="database-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Database contains 50+ pharmaceutical excipients with real-time compliance data</span>
+            </div>
+        </section>
 
-            <div class="analysis-grid">
-                <div class="chart-box">
-                    <canvas id="costChart"></canvas>
+        <!-- About Section -->
+        <section id="about" class="card about-section">
+            <div class="section-header">
+                <h2><i class="fas fa-info-circle"></i> About Chemical Formula Optimizer</h2>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI Optimization</h3>
+                    <p>Uses genetic algorithms to find optimal formulations by testing thousands of combinations in seconds.</p>
                 </div>
-                <div class="details-box">
-                    <h3 id="h-batch">2. Batch Details</h3>
-                    <div id="batch-content"></div>
+                
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Regulatory Compliance</h3>
+                    <p>Ensures formulations meet USP/FDA, BP, and EP standards with automatic compliance checking.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Cost Analysis</h3>
+                    <p>Reduces formulation costs by up to 40% through intelligent excipient selection and optimization.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>Professional Reports</h3>
+                    <p>Generates comprehensive PDF reports with master formulas, batch details, and recommendations.</p>
                 </div>
             </div>
+            
+            <div class="tech-stack">
+                <h3>Technology Stack</h3>
+                <div class="tech-icons">
+                    <div class="tech-icon">
+                        <i class="fab fa-python"></i>
+                        <span>Python/Flask</span>
+                    </div>
+                    <div class="tech-icon">
+                        <i class="fas fa-dna"></i>
+                        <span>Genetic Algorithms</span>
+                    </div>
+                    <div class="tech-icon">
+                        <i class="fab fa-js"></i>
+                        <span>JavaScript</span>
+                    </div>
+                    <div class="tech-icon">
+                        <i class="fas fa-database"></i>
+                        <span>JSON Database</span>
+                    </div>
+                    <div class="tech-icon">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Data Visualization</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-            <h3 id="h-rec">3. Manufacturing & Storage Recommendations</h3>
-            <div id="rec-content" class="rec-grid"></div>
-
-            <div class="security-footer">
-                <svg id="barcode"></svg>
-                <button class="btn-main no-print" style="background:#27ae60; width: auto; padding: 10px 25px;" onclick="window.print()">Export PDF</button>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-flask"></i>
+                <span>Chemical Formula Optimizer</span>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-book"></i> Documentation</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy</a>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>© 2023 Chemical Formula Optimizer. For research and development purposes.</p>
+                <p class="disclaimer">This tool is for formulation optimization assistance only. Always verify with qualified professionals.</p>
             </div>
         </div>
-    </div>
-    <script src="script.js"></script>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
